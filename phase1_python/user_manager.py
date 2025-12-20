@@ -12,21 +12,27 @@ class usermanager:
         self.users = []
 
     def add_user(self , username: str, email: str):
+        if not username:
+            raise ValueError("username is required")
+        
+        if "@" not in email:
+            raise ValueError("invalid email")
+        
+        
         user = User(username , email)
         self.users.append(user)
 
             
-    def lis_users(self):
+    def list_users(self):
         return self.users
     
-
 def main():
     manger = usermanager()
-    manger.add_user("ali", "ali@example.com")
-    manger.add_user("sare" ,"sare@example.com")
+    manger.add_user("ali" , "ali@example.com")
+    manger.add_user("sara" ,"sara@example.com")
 
-    for user in manger.lis_users():
-        print(user)   
+    for user in manger.list_users():
+        print(user)  
 
 
 if __name__ == "__main__":
