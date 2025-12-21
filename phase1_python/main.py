@@ -1,16 +1,31 @@
-from services.user_manager import Usermanager
-
+from request import Request
+from services.user_controller import Usercontroller
 def main():
-    manager = Usermanager()
+    controller = Usercontroller()
+    
 
-    try:
-        manager.add_user("ali" , "ali@example.com")
-        manager.add_user("" , "Invalid-email")
-    except ValueError as e:
-        print(f"Error: {e}")
+    # Create user request
+    request = Request({
+        "username": "ali",
+        "email": "ali@example.com"
+    })
 
-    for user in manager.list_users():
-        print(user)        
+    response = controller.create_user(request)
+    print(response)
+
+    
+    # Invalid user
+    bad_request = Request({
+        "username": "",
+        "email": "invalid"
+    })
+
+    print(controller.create_user(bad_request))
+
+    
+    # List users
+    print(controller.list_users())
+
      
 
 if __name__ == "__main__":
