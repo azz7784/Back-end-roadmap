@@ -23,7 +23,6 @@ class usermanager:
         user = User(username , email)
         self.users.append(user)
 
-
     def list_users(self):
         return self.users
     
