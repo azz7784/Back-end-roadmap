@@ -1,5 +1,6 @@
 from services.user_manager import Usermanager
 from response import Response
+from errors import AppError
 
 class Usercontroller:
     def __init__(self):
@@ -7,20 +8,38 @@ class Usercontroller:
 
     def create_user(self, request):
         try:
-            username = request.data.get("username")
-            email = request.data.get("email")
-
-            self.manager.add_user(username,email)
+            self.manager.add_user(
+                request.data.get("username"),
+                request.data.get("email")
+            )
 
             return Response(
-                data={"massage" : "User created successfully"},
+                data={"message" : "User created successfully"},
                 status=201
             )
-        except ValueError as e:
+
+        except AppError as e:
             return Response(
-                data={"error": str(e)},
-                status= 400
+                data={
+                    "error":{
+                        "code": e.code,
+                        "message": e.message
+                    }
+                },
+                status= e.status
             )
+
+        except Exception:
+            return Response(
+                data={
+                    "error":{
+                        "code": "INTERNAL_ERROR",
+                        "message": "internal server error"
+                    }
+                },
+                status=500
+            )
+
     def list_users(self):
         users=self.manager.list_users()
         return Response(

@@ -1,4 +1,5 @@
 from models.user import User
+from errors import ValidationError , BusinessError
 
 
 class Usermanager:
@@ -8,17 +9,26 @@ class Usermanager:
 
     def validate_user (self , username:str , email:str):
         if not username:
-            raise ValueError ("Username is required")
+            raise ValidationError (
+                code= "USERNAME_REQUIRED",
+                message= "username is required"
+            )
 
         if "@" not in email:
-            raise ValueError ("Invalid email") 
+            raise ValidationError (
+                code= "INVALID_EMAIL",
+                message= "email is invalid"
+            ) 
 
 
     def add_user(self, username:str , email:str):
         self.validate_user(username,email)
-        user = User(username,email)
-        self.users.append(user)
 
+        for user in self.users:
+            if user.username == username:
+                raise BusinessError(
+                    code= "USERNAME_EXISTS",
+                    message= "username already exists"
+                )
 
-    def list_users(self):
-        return self.users
+        self.users.append(User(username, email))
